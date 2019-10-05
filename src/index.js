@@ -1,4 +1,5 @@
-import  { createStore, combineReducers } from "redux";
+import  { createStore, combineReducers, applyMiddleware } from "redux";
+import logger from 'redux-logger'
 
 const initialState = {
   result: 1,
@@ -51,9 +52,18 @@ const userReducer = (state = {
   return state;
 }
 
+const myLogger = (store) => (next) => (action) => { //pass 3 arguments which can be used at function
+  console.log("Logged Action: ", action);
+  next(action); //call action
+}
+
 // const store = createStore(reducer,1);//1 is initial statement
 // const store = createStore(mathReducer);//state is defined in initialState
-const store = createStore(combineReducers({mathReducer, userReducer}));//accept multiple reducers
+const store = createStore(combineReducers
+  ({mathReducer, userReducer}),
+  {}, 
+  applyMiddleware(myLogger,logger)
+);//accept multiple reducers
 
 store.subscribe(() =>{
   console.log("Store update!", store.getState())
