@@ -1,11 +1,11 @@
-import  { createStore } from "redux";
+import  { createStore, combineReducers } from "redux";
 
 const initialState = {
   result: 1,
   lastValues: []
 }
 
-const reducer = (state = initialState, action) => {
+const mathReducer = (state = initialState, action) => {
   switch(action.type){
     case "ADD":
       // state = state + action.payload;
@@ -30,12 +30,35 @@ const reducer = (state = initialState, action) => {
   return state;
 }
 
+const userReducer = (state = {
+  name: "Max",
+  age: 27
+}, action) => {
+  switch(action.type){
+    case "SET_NAME":
+      state = {
+        ...state,
+        name: action.payload
+      };
+      break;
+    case "SET_AGE":
+      state = {
+        ...state,
+        age: action.payload
+      }
+      break;
+  }
+  return state;
+}
+
 // const store = createStore(reducer,1);//1 is initial statement
-const store = createStore(reducer);//1 is initial statement
+// const store = createStore(mathReducer);//state is defined in initialState
+const store = createStore(combineReducers({mathReducer, userReducer}));//accept multiple reducers
 
 store.subscribe(() =>{
   console.log("Store update!", store.getState())
 });
+
 store.dispatch({
   type: "ADD",
   payload: 10
@@ -47,6 +70,10 @@ store.dispatch({
 store.dispatch({
   type: "SUBTRACT",
   payload: 80
+});
+store.dispatch({
+  type: "SET_AGE",
+  payload: 30
 });
 
 // import React from 'react'
