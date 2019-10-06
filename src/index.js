@@ -1,5 +1,10 @@
+import React from "react"
+import { render } from "react-dom";
 import  { createStore, combineReducers, applyMiddleware } from "redux";
-import logger from 'redux-logger'
+import logger from "redux-logger"
+import { Provider } from "react-redux"
+
+import App from "./components/App"
 
 const initialState = {
   result: 1,
@@ -59,8 +64,8 @@ const myLogger = (store) => (next) => (action) => { //pass 3 arguments which can
 
 // const store = createStore(reducer,1);//1 is initial statement
 // const store = createStore(mathReducer);//state is defined in initialState
-const store = createStore(combineReducers
-  ({mathReducer, userReducer}),
+const store = createStore(
+  combineReducers({math: mathReducer, user: userReducer}),
   {}, 
   applyMiddleware(myLogger,logger)
 );//accept multiple reducers
@@ -69,51 +74,25 @@ store.subscribe(() =>{
   console.log("Store update!", store.getState())
 });
 
-store.dispatch({
-  type: "ADD",
-  payload: 10
-});
-store.dispatch({
-  type: "ADD",
-  payload: 22
-});
-store.dispatch({
-  type: "SUBTRACT",
-  payload: 80
-});
-store.dispatch({
-  type: "SET_AGE",
-  payload: 30
-});
+render( 
+  <Provider store={store}>
+    <App />
+  </Provider>,
+  window.document.getElementById("app"));
 
-// import React from 'react'
-// import { render } from 'react-dom'
-
-// import { User } from './components/User'
-// import { Main } from './components/Main'
-
-// class App extends React.Component{
-//   constructor(){
-//     super();
-//     this.state = {
-//       username: "Max"
-//     }
-//   }
-
-//   changeUsername (newName) {
-//     this.setState({
-//       username: newName
-//     });
-//   }
-
-//   render(){
-//     return(
-//       <div className="container">
-//         <Main changeUsername={this.changeUsername.bind(this)} />
-//         <User username={this.state.username}/>
-//       </div>
-//     );
-//   }
-// }
-
-// render(<App />, window.document.getElementById('app'))
+// store.dispatch({
+//   type: "ADD",
+//   payload: 10
+// });
+// store.dispatch({
+//   type: "ADD",
+//   payload: 22
+// });
+// store.dispatch({
+//   type: "SUBTRACT",
+//   payload: 80
+// });
+// store.dispatch({
+//   type: "SET_AGE",
+//   payload: 30
+// });
